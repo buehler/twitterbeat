@@ -1,5 +1,5 @@
 input:
-  period: 1
+  period: 60
 
   twitter:
     names: ["@buehler_c", "@smartive_ch", "@elastic", "@iamdevloper"]
