@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/libbeat/publisher"
 	"time"
 )
 
@@ -17,7 +18,9 @@ var mapFile = flag.String("p", "twittermap.json", "Path to the persistency map j
 type TwitterBeat struct {
 	alive      chan byte
 	api        *anaconda.TwitterApi
+	collecting bool
 	config     *TwitterConfig
+	events     *publisher.Client
 	period     time.Duration
 	twitterMap *persistency.PersistentStringMap
 }
@@ -52,6 +55,7 @@ func (tb *TwitterBeat) Config(b *beat.Beat) error {
 
 func (tb *TwitterBeat) Setup(b *beat.Beat) error {
 	tb.alive = make(chan byte)
+	tb.events = &b.Events
 
 	anaconda.SetConsumerKey(*tb.config.Twitter.ConsumerKey)
 	anaconda.SetConsumerSecret(*tb.config.Twitter.ConsumerSecret)
@@ -61,7 +65,7 @@ func (tb *TwitterBeat) Setup(b *beat.Beat) error {
 }
 
 func (tb *TwitterBeat) Run(b *beat.Beat) error {
-	//var err error
+	var err error
 	ticker := time.NewTicker(tb.period)
 
 	defer ticker.Stop()
@@ -71,20 +75,33 @@ func (tb *TwitterBeat) Run(b *beat.Beat) error {
 		case <-tb.alive:
 			return nil
 		case <-ticker.C:
-			fmt.Println("Run")
-
+			if !tb.collecting {
+				err = tb.collectTweets()
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 
 	return nil
 }
 
+func (tb *TwitterBeat) Stop() {
+	close(tb.alive)
+}
+
 func (tb *TwitterBeat) Cleanup(b *beat.Beat) error {
-	fmt.Println("Cleanup")
+	tb.api.Close()
 	return nil
 }
 
-func (tb *TwitterBeat) Stop() {
-	fmt.Println("Stop")
-	close(tb.alive)
+func (tb *TwitterBeat) collectTweets() error {
+	tb.collecting = true
+	defer func() {
+		tb.collecting = false
+	}()
+	fmt.Println("collecting.")
+
+	return nil
 }
