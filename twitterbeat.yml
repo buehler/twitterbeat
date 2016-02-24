@@ -1,12 +1,12 @@
 input:
-  period: 60
+  period: ${PERIOD:60}
 
   twitter:
-    names: ["@buehler_c", "@smartive_ch", "@elastic", "@iamdevloper"]
-    consumer_key: "${CONSUMER_KEY}"
-    consumer_secret: "${CONSUMER_SECRET}"
-    access_key: "${ACCESS_KEY}"
-    access_secret: "${ACCESS_SECRET}"
+    names: ${SCREEN_NAMES:["@buehler_c", "@smartive_ch", "@elastic", "@iamdevloper"]}
+    consumer_key: ${CONSUMER_KEY}
+    consumer_secret: ${CONSUMER_SECRET}
+    access_key: ${ACCESS_KEY}
+    access_secret: ${ACCESS_SECRET}
 
 
 
@@ -26,7 +26,7 @@ output:
     # Scheme and port can be left out and will be set to the default (http and 9200)
     # In case you specify and additional path, the scheme is required: http://localhost:9200/path
     # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-    hosts: ["docker.lo:9200"]
+    hosts: ${ES_HOSTS:["localhost:9200"]}
 
     # Optional protocol and basic auth credentials.
     #protocol: "https"
