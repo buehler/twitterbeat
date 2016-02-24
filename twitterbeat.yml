@@ -1,8 +1,8 @@
 input:
-  period: 15
+  period: 1
 
   twitter:
-    names: ["@buehler_c"]
+    names: ["@buehler_c", "@smartive_ch", "@elastic", "@iamdevloper"]
     consumer_key: "${CONSUMER_KEY}"
     consumer_secret: "${CONSUMER_SECRET}"
     access_key: "${ACCESS_KEY}"
