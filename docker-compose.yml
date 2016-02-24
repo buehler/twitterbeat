@@ -1,0 +1,11 @@
+twitterbeat-elasticsearch:
+  image: elasticsearch
+  ports:
+    - 9200:9200
+
+twitterbeat-kibana:
+  image: kibana
+  ports:
+    - 5601:5601
+  links:
+    - twitterbeat-elasticsearch:elasticsearch
