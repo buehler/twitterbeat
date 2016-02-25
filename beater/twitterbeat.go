@@ -3,7 +3,7 @@ package beater
 import (
 	"flag"
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/buehler/TwitterBeat/persistency"
+	"github.com/buehler/go-elastic-twitterbeat/persistency"
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/common"

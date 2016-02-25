@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/buehler/TwitterBeat/beater"
+	"github.com/buehler/go-elastic-twitterbeat/beater"
 	"github.com/elastic/beats/libbeat/beat"
 )
 
