@@ -3,7 +3,7 @@ package beater
 import (
 	"flag"
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/buehler/PersistentStringMap/persistency"
+	"github.com/buehler/TwitterBeat/persistency"
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/common"
@@ -23,7 +23,7 @@ type TwitterBeat struct {
 	config     *TwitterConfig
 	events     publisher.Client
 	period     time.Duration
-	twitterMap *persistency.PersistentStringMap
+	twitterMap *persistency.StringMap
 }
 
 func New() *TwitterBeat {
@@ -32,7 +32,7 @@ func New() *TwitterBeat {
 }
 
 func (tb *TwitterBeat) HandleFlags(b *beat.Beat) {
-	tb.twitterMap = persistency.NewPersistentStringMap()
+	tb.twitterMap = persistency.NewStringMap()
 	tb.twitterMap.Load(*mapFile)
 }
 
