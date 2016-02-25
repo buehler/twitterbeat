@@ -193,12 +193,12 @@ shipper:
   # The name of the shipper that publishes the network data. It can be used to group
   # all the transactions sent by a single shipper in the web interface.
   # If this options is not defined, the hostname is used.
-  #name:
+  name: ${BEAT_NAME}
 
   # The tags of the shipper are included in their own field with each
   # transaction published. Tags make it easy to group servers by different
   # logical properties.
-  #tags: ["service-X", "web-tier"]
+  tags: ${BEAT_TAGS}
 
   # Uncomment the following if you want to ignore transactions created
   # by the server on which the shipper is installed. This option is useful
@@ -266,5 +266,5 @@ logging:
 
   # Sets log level. The default log level is error.
   # Available log levels are: critical, error, warning, info, debug
-  #level: error
+  level: ${LOG_LEVEL:error}
 
