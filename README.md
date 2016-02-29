@@ -52,10 +52,10 @@ If you delete the content of this file, twitterbeat will reindex the last 20 twe
 
 ```bash
 docker run -d \
-       -e CONSUMER_KEY=<consumerKey>
-       -e CONSUMER_SECRET=<secret>
-       -e ACCESS_KEY=<accessKey>
-       -e ACCESS_SECRET=<secret>
+       -e CONSUMER_KEY=<consumerKey> \
+       -e CONSUMER_SECRET=<secret> \
+       -e ACCESS_KEY=<accessKey> \
+       -e ACCESS_SECRET=<secret> \
        --link elasticsearch:elasticsearch \
        buehler/go-elastic-twitterbeat
 ```
