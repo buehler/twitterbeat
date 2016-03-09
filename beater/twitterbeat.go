@@ -2,6 +2,10 @@ package beater
 
 import (
 	"flag"
+	"net/url"
+	"strconv"
+	"time"
+
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/buehler/go-elastic-twitterbeat/persistency"
 	"github.com/elastic/beats/libbeat/beat"
@@ -9,9 +13,6 @@ import (
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
-	"net/url"
-	"strconv"
-	"time"
 )
 
 var mapFile = flag.String("p", "twittermap.json", "Path to the persistency map json file")
@@ -138,7 +139,14 @@ func (tb *TwitterBeat) processUser(name string, sync chan byte, err chan error) 
 	result, e := tb.api.GetUserTimeline(v)
 
 	if e != nil {
-		err <- e
+		switch e.(type) {
+		case anaconda.TwitterError:
+			logp.Err("TwitterApi threw error: %v\nfor name: %v", e, name)
+			sync <- 1
+		default:
+			logp.Critical("Non twitterapi error happend: %v", e)
+			err <- e
+		}
 		return
 	}
 
