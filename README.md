@@ -31,6 +31,8 @@ I would recommend to use the docker image to run a containerized version of the 
 | `CONSUMER_SECRET` | `null`                      | Twitter api consumer secret |
 | `ACCESS_KEY`      | `null`                      | Twitter api access key      |
 | `ACCESS_SECRET`   | `null`                      | Twitter api access secret   |
+| `BEAT_NAME`       | `null`                      | Shipper name                |
+| `BEAT_TAGS`       | `null`                      | Shipper tags                |
 
 ###Volumes / mount
 
