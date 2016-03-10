@@ -7,5 +7,5 @@ import:
   - libbeat/cfgfile
   - libbeat/common
   - libbeat/logp
-- package: https://github.com/ChimeraCoder/anaconda
-- package: https://github.com/dustin/gojson
+- package: github.com/ChimeraCoder/anaconda
+- package: github.com/dustin/gojson
