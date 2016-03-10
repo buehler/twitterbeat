@@ -1,0 +1,5 @@
+= Twitterbeat Docs
+
+Welcome to the Twitterbeat documentation.
+
+
