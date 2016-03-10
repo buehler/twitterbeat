@@ -7,3 +7,5 @@
 /twitterbeat.test
 /twitterbeat.yml
 *.pyc
+
+glide.lock
