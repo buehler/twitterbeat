@@ -5,7 +5,6 @@
 .DS_Store
 /twitterbeat
 /twitterbeat.test
-/twitterbeat.yml
 *.pyc
 
 glide.lock
