@@ -26,7 +26,7 @@ VOLUME /var/twitterbeat/data /var/twitterbeat/config
 
 WORKDIR /etc/twitterbeat
 
-ENV PERIOD=60 \
+ENV PERIOD="60s" \
     SCREEN_NAMES="[\"@smartive_ch\", \"@elastic\"]" \
     ES_HOSTS="[\"elasticsearch:9200\"]" \
     CONSUMER_KEY="" \
