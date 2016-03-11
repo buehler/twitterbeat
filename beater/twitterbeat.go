@@ -59,6 +59,8 @@ func (bt *Twitterbeat) Config(b *beat.Beat) error {
 func (bt *Twitterbeat) Setup(b *beat.Beat) error {
 	logp.Info("Setup waitduration and api keys")
 
+	bt.events = b.Events
+
 	var err error
 	bt.period, err = time.ParseDuration(*bt.beatConfig.Period)
 	if err != nil {
