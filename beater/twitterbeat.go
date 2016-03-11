@@ -37,11 +37,14 @@ func New() *Twitterbeat {
 /// *** Beater interface methods ***///
 
 func (tb *Twitterbeat) HandleFlags(b *beat.Beat) {
+	logp.Info("Handling beat flags")
+
 	tb.twitterMap = persistency.NewStringMap()
 	tb.twitterMap.Load(*mapFile)
 }
 
 func (bt *Twitterbeat) Config(b *beat.Beat) error {
+	logp.Info("Loading configuration")
 
 	// Load beater configuration
 	var err error
@@ -54,6 +57,7 @@ func (bt *Twitterbeat) Config(b *beat.Beat) error {
 }
 
 func (bt *Twitterbeat) Setup(b *beat.Beat) error {
+	logp.Info("Setup waitduration and api keys")
 
 	var err error
 	bt.period, err = time.ParseDuration(*bt.beatConfig.Period)
@@ -92,15 +96,21 @@ func (bt *Twitterbeat) Run(b *beat.Beat) error {
 }
 
 func (bt *Twitterbeat) Cleanup(b *beat.Beat) error {
+	logp.Info("Cleanup api")
+
 	bt.api.Close()
 	return nil
 }
 
 func (bt *Twitterbeat) Stop() {
+	logp.Info("Ctrl-C was hit, stopping.")
+
 	close(bt.done)
 }
 
 func (bt *Twitterbeat) collectTweets() error {
+	logp.Info("Collecting tweets")
+
 	bt.collecting = true
 	defer func() {
 		bt.collecting = false
@@ -128,6 +138,8 @@ func (bt *Twitterbeat) collectTweets() error {
 }
 
 func (bt *Twitterbeat) processUser(name string, sync chan byte, err chan error) {
+	logp.Info("Collecting tweets for '%v'", name)
+
 	var e error
 
 	v := url.Values{}
@@ -151,6 +163,8 @@ func (bt *Twitterbeat) processUser(name string, sync chan byte, err chan error) 
 		}
 		return
 	}
+
+	logp.Info("Got %v tweets for '%v'", len(result), name)
 
 	for _, tweet := range result {
 		event := common.MapStr{

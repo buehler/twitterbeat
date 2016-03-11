@@ -22,7 +22,7 @@ I would recommend to use the docker image to run a containerized version of the 
 
 | ENV variable      | Default value               | Description                 |
 | ----------------- | --------------------------- | --------------------------  |
-| `PERIOD`          | `60`                        | Refresh rate in seconds     |
+| `PERIOD`          | `60s`                       | Refresh rate in seconds     |
 | `SCREEN_NAMES`    | `["@smartive", "@elastic"]` | Screennames to fetch        |
 | `ES_HOSTS`        | `["elasticsearch:9200"]`    | Hosts to index tweets to    |
 | `CONSUMER_KEY`    | `null`                      | Twitter api consumer key    |

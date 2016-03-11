@@ -32,4 +32,4 @@ ENV PERIOD="60s" \
     ACCESS_KEY="" \
     ACCESS_SECRET=""
 
-CMD [ "./twitterbeat", "-c", "/var/twitterbeat/config/twitterbeat.yml", "-p", "/var/twitterbeat/data/twitterMap.json" ]
+CMD [ "./twitterbeat", "-c", "/var/twitterbeat/config/twitterbeat.yml", "-p", "/var/twitterbeat/data/twitterMap.json", "-e", "-v" ]
