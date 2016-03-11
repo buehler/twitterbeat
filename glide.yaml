@@ -1,11 +1,11 @@
-package: github.com/buehler/go-elastic-twitterbeat
+package: .
 import:
-- package: github.com/ChimeraCoder/anaconda
-- package: github.com/dustin/gojson
 - package: github.com/elastic/beats
+  version: ae30528774fffa5879392388f651286785118d38
   subpackages:
   - /libbeat/beat
   - libbeat/cfgfile
   - libbeat/common
   - libbeat/logp
-  - libbeat/publisher
+- package: github.com/ChimeraCoder/anaconda
+- package: github.com/dustin/gojson

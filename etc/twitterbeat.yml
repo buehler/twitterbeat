@@ -1,13 +1,20 @@
-input:
-  period: ${PERIOD:60}
+################### Twitterbeat Configuration Example #########################
 
+############################# Twitterbeat ######################################
+
+twitterbeat:
+  # Defines how often an event is sent to the output
+  period: 1s
+  
   twitter:
+    # Defines the catched usernames (screennames)
     names: ${SCREEN_NAMES:["@buehler_c", "@smartive_ch", "@elastic", "@iamdevloper"]}
+   
+    # Defines the api and consumer key from twitter api
     consumer_key: ${CONSUMER_KEY}
     consumer_secret: ${CONSUMER_SECRET}
     access_key: ${ACCESS_KEY}
     access_secret: ${ACCESS_SECRET}
-
 
 
 ###############################################################################
@@ -26,7 +33,7 @@ output:
     # Scheme and port can be left out and will be set to the default (http and 9200)
     # In case you specify and additional path, the scheme is required: http://localhost:9200/path
     # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-    hosts: ${ES_HOSTS:["localhost:9200"]}
+    hosts: ["localhost:9200"]
 
     # Optional protocol and basic auth credentials.
     #protocol: "https"
@@ -41,20 +48,20 @@ output:
     # Number of workers per Elasticsearch host.
     #worker: 1
 
-    # Optional index name. The default is "topbeat" and generates
-    # [topbeat-]YYYY.MM.DD keys.
-    #index: "topbeat"
+    # Optional index name. The default is "twitterbeat" and generates
+    # [twitterbeat-]YYYY.MM.DD keys.
+    #index: "twitterbeat"
 
     # A template is used to set the mapping in Elasticsearch
     # By default template loading is disabled and no template is loaded.
     # These settings can be adjusted to load your own template or overwrite existing ones
     #template:
 
-      # Template name. By default the template name is topbeat.
-      #name: "topbeat"
+      # Template name. By default the template name is twitterbeat.
+      #name: "twitterbeat"
 
       # Path to template file
-      #path: "topbeat.template.json"
+      #path: "twitterbeat.template.json"
 
       # Overwrite existing template
       #overwrite: false
@@ -137,7 +144,7 @@ output:
     # Optional index name. The default index name depends on the each beat.
     # For Packetbeat, the default is set to packetbeat, for Topbeat
     # top topbeat and for Filebeat to filebeat.
-    #index: topbeat
+    #index: twitterbeat
 
     # Optional TLS. By default is off.
     #tls:
@@ -166,10 +173,10 @@ output:
   ### File as output
   #file:
     # Path to the directory where to save the generated files. The option is mandatory.
-    #path: "/tmp/topbeat"
+    #path: "/tmp/twitterbeat"
 
-    # Name of the generated files. The default is `topbeat` and it generates files: `topbeat`, `topbeat.1`, `topbeat.2`, etc.
-    #filename: topbeat
+    # Name of the generated files. The default is `twitterbeat` and it generates files: `twitterbeat`, `twitterbeat.1`, `twitterbeat.2`, etc.
+    #filename: twitterbeat
 
     # Maximum size in kilobytes of each file. When this size is reached, the files are
     # rotated. The default value is 10 MB.
@@ -193,12 +200,12 @@ shipper:
   # The name of the shipper that publishes the network data. It can be used to group
   # all the transactions sent by a single shipper in the web interface.
   # If this options is not defined, the hostname is used.
-  name: ${BEAT_NAME}
+  #name:
 
   # The tags of the shipper are included in their own field with each
   # transaction published. Tags make it easy to group servers by different
   # logical properties.
-  tags: ${BEAT_TAGS}
+  #tags: ["service-X", "web-tier"]
 
   # Uncomment the following if you want to ignore transactions created
   # by the server on which the shipper is installed. This option is useful
@@ -216,10 +223,6 @@ shipper:
 
   # Internal queue size for single events in processing pipeline
   #queue_size: 1000
-
-  # Sets the maximum number of CPUs that can be executing simultaneously. The
-  # default is the number of logical CPUs available in the system.
-  #max_procs:
 
   # Configure local GeoIP database support.
   # If no paths are not configured geoip is disabled.
@@ -266,5 +269,6 @@ logging:
 
   # Sets log level. The default log level is error.
   # Available log levels are: critical, error, warning, info, debug
-  level: ${LOG_LEVEL:error}
+  #level: error
+
 

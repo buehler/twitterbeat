@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/buehler/go-elastic-twitterbeat/persistency"
+	"github.com/buehler/twitterbeat/config"
+	"github.com/buehler/twitterbeat/persistency"
 	"github.com/elastic/beats/libbeat/beat"
-	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
@@ -17,104 +17,106 @@ import (
 
 var mapFile = flag.String("p", "twittermap.json", "Path to the persistency map json file")
 
-type TwitterBeat struct {
-	alive      chan byte
+type Twitterbeat struct {
+	beatConfig *config.TwitterbeatConfig
+	done       chan struct{}
+	period     time.Duration
 	api        *anaconda.TwitterApi
 	collecting bool
-	config     *TwitterConfig
 	events     publisher.Client
-	period     time.Duration
 	twitterMap *persistency.StringMap
 }
 
-func New() *TwitterBeat {
-	beat := &TwitterBeat{}
-	return beat
+// Creates beater
+func New() *Twitterbeat {
+	return &Twitterbeat{
+		done: make(chan struct{}),
+	}
 }
 
-func (tb *TwitterBeat) HandleFlags(b *beat.Beat) {
+/// *** Beater interface methods ***///
+
+func (tb *Twitterbeat) HandleFlags(b *beat.Beat) {
 	tb.twitterMap = persistency.NewStringMap()
 	tb.twitterMap.Load(*mapFile)
 }
 
-func (tb *TwitterBeat) Config(b *beat.Beat) error {
-	config := TwitterConfigYaml{}
-	err := cfgfile.Read(&config, "")
+func (bt *Twitterbeat) Config(b *beat.Beat) error {
+
+	// Load beater configuration
+	var err error
+	bt.beatConfig, err = config.NewTwitterbeatConfig()
 	if err != nil {
-		logp.Err("Error reading configuration file: %v", err)
 		return err
 	}
-	tb.config = &config.Input
 
-	if config.Input.Period != nil {
-		tb.period = time.Duration(*config.Input.Period) * time.Second
-	} else {
-		tb.period = 60 * time.Second
+	return nil
+}
+
+func (bt *Twitterbeat) Setup(b *beat.Beat) error {
+
+	var err error
+	bt.period, err = time.ParseDuration(*bt.beatConfig.Period)
+	if err != nil {
+		return err
 	}
 
-	return nil
-}
-
-func (tb *TwitterBeat) Setup(b *beat.Beat) error {
-	tb.alive = make(chan byte)
-	tb.events = b.Events
-
-	anaconda.SetConsumerKey(*tb.config.Twitter.ConsumerKey)
-	anaconda.SetConsumerSecret(*tb.config.Twitter.ConsumerSecret)
-	tb.api = anaconda.NewTwitterApi(*tb.config.Twitter.AccessKey, *tb.config.Twitter.AccessSecret)
+	anaconda.SetConsumerKey(*bt.beatConfig.Twitter.ConsumerKey)
+	anaconda.SetConsumerSecret(*bt.beatConfig.Twitter.ConsumerSecret)
+	bt.api = anaconda.NewTwitterApi(*bt.beatConfig.Twitter.AccessKey, *bt.beatConfig.Twitter.AccessSecret)
 
 	return nil
 }
 
-func (tb *TwitterBeat) Run(b *beat.Beat) error {
+func (bt *Twitterbeat) Run(b *beat.Beat) error {
+	logp.Info("twitterbeat is running! Hit CTRL-C to stop it.")
+
 	var err error
-	ticker := time.NewTicker(tb.period)
+	ticker := time.NewTicker(bt.period)
 
 	defer ticker.Stop()
 
 	for {
 		select {
-		case <-tb.alive:
+		case <-bt.done:
 			return nil
 		case <-ticker.C:
-			if !tb.collecting {
-				err = tb.collectTweets()
+			if !bt.collecting {
+				err = bt.collectTweets()
 				if err != nil {
 					return err
 				}
 			}
 		}
 	}
+}
 
+func (bt *Twitterbeat) Cleanup(b *beat.Beat) error {
+	bt.api.Close()
 	return nil
 }
 
-func (tb *TwitterBeat) Stop() {
-	close(tb.alive)
+func (bt *Twitterbeat) Stop() {
+	close(bt.done)
 }
 
-func (tb *TwitterBeat) Cleanup(b *beat.Beat) error {
-	tb.api.Close()
-	return nil
-}
-
-func (tb *TwitterBeat) collectTweets() error {
-	tb.collecting = true
+func (bt *Twitterbeat) collectTweets() error {
+	bt.collecting = true
 	defer func() {
-		tb.collecting = false
+		bt.collecting = false
 	}()
 
 	sync, err, processed := make(chan byte), make(chan error), 0
 
-	for _, name := range *tb.config.Twitter.Names {
-		go tb.processUser(name, sync, err)
+	for _, name := range *bt.beatConfig.Twitter.Names {
+		go bt.processUser(name, sync, err)
 	}
 
 	for {
 		select {
 		case <-sync:
 			processed++
-			if processed == len(*tb.config.Twitter.Names) {
+			if processed == len(*bt.beatConfig.Twitter.Names) {
 				return nil
 			}
 		case e := <-err:
@@ -125,18 +127,18 @@ func (tb *TwitterBeat) collectTweets() error {
 	return nil
 }
 
-func (tb *TwitterBeat) processUser(name string, sync chan byte, err chan error) {
+func (bt *Twitterbeat) processUser(name string, sync chan byte, err chan error) {
 	var e error
 
 	v := url.Values{}
 	v.Set("screen_name", name)
 	v.Set("trim_user", "true")
 
-	if tb.twitterMap.Contains(name) {
-		v.Set("since_id", tb.twitterMap.Get(name))
+	if bt.twitterMap.Contains(name) {
+		v.Set("since_id", bt.twitterMap.Get(name))
 	}
 
-	result, e := tb.api.GetUserTimeline(v)
+	result, e := bt.api.GetUserTimeline(v)
 
 	if e != nil {
 		switch e.(type) {
@@ -158,11 +160,11 @@ func (tb *TwitterBeat) processUser(name string, sync chan byte, err chan error) 
 			"tweet":      tweet,
 		}
 
-		tb.events.PublishEvent(event)
+		bt.events.PublishEvent(event)
 	}
 
 	if len(result) >= 1 {
-		tb.twitterMap.Set(name, strconv.FormatInt(result[0].Id, 10))
+		bt.twitterMap.Set(name, strconv.FormatInt(result[0].Id, 10))
 	}
 
 	sync <- 1
