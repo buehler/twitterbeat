@@ -29,3 +29,7 @@ install-cfg:
 .PHONY: update-deps
 update-deps:
 	glide update  --no-recursive
+
+.PHONY: update
+update:
+	echo "Update not supported due to custom template"
