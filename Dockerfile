@@ -9,16 +9,16 @@ RUN git clone https://github.com/Masterminds/glide.git $GOPATH/src/github.com/Ma
     make build && \
     cp ./glide /usr/bin
 
-COPY . $GOPATH/src/github.com/buehler/go-elastic-twitterbeat
+COPY . $GOPATH/src/github.com/buehler/twitterbeat
 
-RUN cd /go/src/github.com/buehler/go-elastic-twitterbeat && \
+RUN cd /go/src/github.com/buehler/twitterbeat && \
     glide install && \
     go test $(glide novendor) && \
     go build -v -o twitterbeat
 
 RUN mkdir -p /etc/twitterbeat/ /var/twitterbeat/data /var/twitterbeat/config && \
-    cp /go/src/github.com/buehler/go-elastic-twitterbeat/twitterbeat /etc/twitterbeat/ && \
-    cp /go/src/github.com/buehler/go-elastic-twitterbeat/etc/twitterbeat.yml /var/twitterbeat/config/twitterbeat.yml
+    cp /go/src/github.com/buehler/twitterbeat/twitterbeat /etc/twitterbeat/ && \
+    cp /go/src/github.com/buehler/twitterbeat/etc/twitterbeat.yml /var/twitterbeat/config/twitterbeat.yml
 
 RUN rm -rf /go
 
