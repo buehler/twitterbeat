@@ -12,9 +12,7 @@ RUN git clone https://github.com/Masterminds/glide.git $GOPATH/src/github.com/Ma
 COPY . $GOPATH/src/github.com/buehler/twitterbeat
 
 RUN cd /go/src/github.com/buehler/twitterbeat && \
-    glide install && \
-    go test $(glide novendor) && \
-    go build -v -o twitterbeat
+    make build-docker
 
 RUN mkdir -p /etc/twitterbeat/ /var/twitterbeat/data /var/twitterbeat/config && \
     cp /go/src/github.com/buehler/twitterbeat/twitterbeat /etc/twitterbeat/ && \

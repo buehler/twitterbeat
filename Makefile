@@ -6,6 +6,10 @@ init:
 	git init
 	git add .
 
+.PHONY: install-deps
+install-deps:
+	glide install
+
 .PHONY: update-deps
 update-deps:
 	glide update  --no-recursive
@@ -17,3 +21,9 @@ test:
 .PHONY: build
 build:
 	go build -v -o twitterbeat
+
+.PHONY: build-docker
+build-docker:
+	make install-deps
+	make test
+	make build
