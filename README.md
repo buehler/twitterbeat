@@ -80,6 +80,7 @@ To get running with Twitterbeat, run the following commands:
 
 ```
 glide update --no-recursive
+glide install
 make update
 ```
 
