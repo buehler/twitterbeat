@@ -1,0 +1,15 @@
+  {
+      "title": "Twitterbeat-Dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":9,\"id\":\"Accounts-Twitter\",\"panelIndex\":2,\"row\":1,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Top-Tweet-Favorite\",\"panelIndex\":4,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Top-Tweet-Retweet\",\"panelIndex\":5,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Top-10-Hashtags\",\"panelIndex\":6,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":9,\"id\":\"User-Mentions\",\"panelIndex\":9,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Lang-Tweet\",\"panelIndex\":10,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"id\":\"Date-Histogram\",\"type\":\"visualization\",\"panelIndex\":11,\"size_x\":8,\"size_y\":3,\"col\":1,\"row\":1}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-8\":{\"vis\":{\"legendOpen\":false}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-24h",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
